@@ -40,11 +40,23 @@ local function GenerateWeaponTable(type)
 	return weapons.Get(TypeToBase[type])
 end
 
-function AddNewWeapon(slot, type, tab, cls)
-	local new = GenerateWeaponTable(type)
+if CLIENT then
+	surface.CreateFont("CSTypeDeath",
+	{
+		font = "csd",
+		size = ScreenScale(20),
+		antialias = true,
+		weight = 300
+	})
+end
+
+local killicon_color = Color(255, 80, 0, 255)
+
+function AddNewWeapon(slot, typ, tab, cls, icon)
+	local new = GenerateWeaponTable(typ)
 
 	_G[SlotToTable[slot]][cls] = true
-	_G[TypeToTable[type]][cls] = true
+	_G[TypeToTable[typ]][cls] = true
 
 	game.AddAmmoType({name = "ammotype_" .. cls})
 	if CLIENT then
@@ -58,11 +70,15 @@ function AddNewWeapon(slot, type, tab, cls)
 	new.Primary.ClipSize = -1
 	new.Primary.Ammo = "ammotype_" .. cls
 
-	if not g_DefaultWeapons[type] then
-		g_DefaultWeapons[type] = cls
+	if not g_DefaultWeapons[typ] then
+		g_DefaultWeapons[typ] = cls
 	end
 
 	weapons.Register(new, cls)
+
+	if CLIENT and type(icon) == "table" then
+		killicon.AddFont(cls, icon.font, icon.letter, killicon_color)
+	end
 end
 
 local Wep = {Primary = {}}
@@ -79,7 +95,7 @@ Wep.Primary.Delay = 0.1
 Wep.Primary.Recoil = 1
 Wep.Primary.Cone = 0.02
 Wep.Primary.NumShots = 1
-AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_ak47")
+AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_ak47", {font = "CSTypeDeath", letter = "b"})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Shotgun"
@@ -97,7 +113,7 @@ Wep.Primary.Delay = 0.6
 Wep.Primary.Recoil = 4
 Wep.Primary.Cone = 0.1
 Wep.Primary.NumShots = 6
-AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_shotgun")
+AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_shotgun", {font = "HL2MPTypeDeath", letter = "0"})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Uzi"
@@ -105,6 +121,8 @@ Wep.HoldType = "pistol"
 Wep.ViewModel = Model("models/weapons/cstrike/c_smg_mac10.mdl")
 Wep.WorldModel = Model("models/weapons/w_smg_mac10.mdl")
 Wep.Slot = 0
+Wep.CrosshairType = "circle"
+Wep.CrosshairRadius = 8
 Wep.Primary.DefaultClip = 30
 Wep.Primary.Automatic = true
 Wep.Primary.Sound = Sound("Weapon_MAC10.Single")
@@ -113,7 +131,7 @@ Wep.Primary.Delay = 0.05
 Wep.Primary.Recoil = 0.3
 Wep.Primary.Cone = 0.05
 Wep.Primary.NumShots = 1
-AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_uzi")
+AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_uzi", {font = "CSTypeDeath", letter = "l"})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Pistol"
@@ -129,7 +147,7 @@ Wep.Primary.Delay = 0.3
 Wep.Primary.Recoil = 1
 Wep.Primary.Cone = 0.01
 Wep.Primary.NumShots = 1
-AddNewWeapon(WEAPON_SLOT_SECONDARY, WEAPON_TYPE_GUN, Wep, "weapon_pistol")
+AddNewWeapon(WEAPON_SLOT_SECONDARY, WEAPON_TYPE_GUN, Wep, "weapon_pistol", {font = "CSTypeDeath", letter = "a"})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Magnum"
@@ -145,7 +163,7 @@ Wep.Primary.Delay = 0.5
 Wep.Primary.Recoil = 1
 Wep.Primary.Cone = 0.01
 Wep.Primary.NumShots = 1
-AddNewWeapon(WEAPON_SLOT_SECONDARY, WEAPON_TYPE_GUN, Wep, "weapon_magnum")
+AddNewWeapon(WEAPON_SLOT_SECONDARY, WEAPON_TYPE_GUN, Wep, "weapon_magnum", {font = "HL2MPTypeDeath", letter = "."})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Fists"
@@ -159,7 +177,7 @@ Wep.Primary.SoundMiss = Sound("Weapon_Crowbar.Single")
 Wep.Primary.Range = 64
 Wep.Primary.Damage = 40
 Wep.Primary.Delay = 0.2
-AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_fists")
+AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_fists", {font = "CSTypeDeath", letter = "H"})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Knife"
@@ -172,7 +190,7 @@ Wep.Primary.SoundMiss = Sound("Weapon_Crowbar.Single")
 Wep.Primary.Range = 64
 Wep.Primary.Damage = 120
 Wep.Primary.Delay = 0.4
-AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_knife")
+AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_knife", {font = "CSTypeDeath", letter = "j"})
 
 Wep = {Primary = {}}
 Wep.PrintName = "Crowbar"
@@ -185,4 +203,4 @@ Wep.Primary.SoundMiss = Sound("Weapon_Crowbar.Single")
 Wep.Primary.Range = 128
 Wep.Primary.Damage = 120
 Wep.Primary.Delay = 0.8
-AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_crowbar")
+AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_crowbar", {font = "HL2MPTypeDeath", letter = "6"})

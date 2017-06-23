@@ -35,10 +35,8 @@ if SERVER then
 	end
 
 	function ENT:StartTouch(ent)
-		-- print("Thrown gun velocity: " .. tostring(self:GetVelocity())
-		print("Thrown gun velocity length: " .. self:GetVelocity():Length())
 		if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC()) then
-			if (CurTime() - self.Creation) > 1 and self.HitGround then
+			if (CurTime() - self.Creation) > 1 and self.HitGround and not ent:HasWeapon(self.Class) then
 				local wep = ent:Give(self.Class)
 				if g_GunTypeWeapons[self.Class] then
 					ent:SetAmmo(self.Ammo, wep.Primary.Ammo)

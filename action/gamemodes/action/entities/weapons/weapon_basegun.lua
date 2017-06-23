@@ -114,7 +114,9 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-	self.Owner:SetLastAttack(CurTime())
+	if self.Owner.SetLastAttack then
+		self.Owner:SetLastAttack(CurTime())
+	end
 
 	self:ShootEffects()
 	self:EmitSound(self.Primary.Sound)
@@ -243,5 +245,17 @@ if CLIENT then
 else
 	function SWEP:Equip(ply)
 		ply:EmitSound(EquipSound)
+
+		if g_PrimarySlotWeapons[self.ClassName] and not ply:GetHasPrimaryWeapon() then
+			ply:SetHasPrimaryWeapon(true)
+		elseif g_SecondarySlotWeapons[self.ClassName] and not ply:GetHasSecondaryWeapon() then
+			ply:SetHasSecondaryWeapon(true)
+		elseif g_MeleeSlotWeapons[self.ClassName] and not ply:GetHasMeleeWeapon() then
+			if ply:HasWeapon("weapon_fists") then
+				ply:StripWeapon("weapon_fists")
+			end
+
+			ply:SetHasMeleeWeapon(true)
+		end
 	end
 end

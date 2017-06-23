@@ -153,6 +153,20 @@ local EquipSound = Sound("Item.PickupMelee")
 
 if SERVER then
 	function SWEP:Equip(ply)
+		if self.ClassName == "weapon_fists" then return end
+
 		ply:EmitSound(EquipSound)
+
+		if g_PrimarySlotWeapons[self.ClassName] and not ply:GetHasPrimaryWeapon() then
+			ply:SetHasPrimaryWeapon(true)
+		elseif g_SecondarySlotWeapons[self.ClassName] and not ply:GetHasSecondaryWeapon() then
+			ply:SetHasSecondaryWeapon(true)
+		elseif g_MeleeSlotWeapons[self.ClassName] and not ply:GetHasMeleeWeapon() then
+			if ply:HasWeapon("weapon_fists") then
+				ply:StripWeapon("weapon_fists")
+			end
+
+			ply:SetHasMeleeWeapon(true)
+		end
 	end
 end
