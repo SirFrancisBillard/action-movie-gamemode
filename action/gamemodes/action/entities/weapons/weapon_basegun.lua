@@ -234,8 +234,14 @@ function SWEP:Deploy()
 	self:SetReloadTimer(0)
 end
 
+local EquipSound = Sound("Item.PickupGun")
+
 if CLIENT then
 	function SWEP:DrawHUD()
 		self.CrosshairFunctions[self.CrosshairType](self.CrosshairRadius, self.CrosshairColor)
+	end
+else
+	function SWEP:Equip(ply)
+		ply:EmitSound(EquipSound)
 	end
 end

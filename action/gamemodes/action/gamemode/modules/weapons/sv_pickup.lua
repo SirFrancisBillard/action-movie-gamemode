@@ -14,5 +14,5 @@ function GM:PlayerCanPickupWeapon(ply, wep)
 		return true
 	end
 
-	return false
+	return true
 end
