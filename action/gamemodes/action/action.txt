@@ -1,0 +1,12 @@
+"action"
+{
+	"base"		"base"
+	"title"		"Hotline Miami 3"
+	"maps"		"^cs_|^de_"
+	"menusystem"	"1"
+	"workshopid"	""
+
+	"settings"
+	{
+	}
+}
