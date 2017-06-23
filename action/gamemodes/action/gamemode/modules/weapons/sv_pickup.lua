@@ -10,9 +10,12 @@ function GM:PlayerCanPickupWeapon(ply, wep)
 		ply:SetHasSecondaryWeapon(true)
 		return true
 	elseif g_MeleeSlotWeapons[cls] and not ply:GetHasMeleeWeapon() then
+		if ply:HasWeapon("weapon_fists") then
+			ply:StripWeapon("weapon_fists")
+		end
 		ply:SetHasMeleeWeapon(true)
 		return true
 	end
 
-	return false
+	return true
 end

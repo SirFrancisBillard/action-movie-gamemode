@@ -3,16 +3,20 @@ DEFINE_BASECLASS("player_default")
 local PLAYER = {}
 
 PLAYER.DisplayName = "Player"
-PLAYER.WalkSpeed = 250
-PLAYER.RunSpeed = 250
+PLAYER.WalkSpeed = 125
+PLAYER.RunSpeed = 300
+
+local primaries = {"weapon_ak47", "weapon_shotgun", "weapon_uzi"}
+local secondaries = {"weapon_pistol", "weapon_magnum"}
+local melees = {"weapon_crowbar", "weapon_knife"}
 
 function PLAYER:Loadout()
 	self.Player:StripWeapons()
 	self.Player:RemoveAllAmmo()
 
-	local primary = "weapon_ak47" -- g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] and g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] or g_DefaultWeapons[WEAPON_TYPE_PRIMARY]
-	local secondary = "weapon_pistol" -- g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] and g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] or g_DefaultWeapons[WEAPON_TYPE_SECONDARY]
-	local melee = "weapon_crowbar" -- g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] and g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] or g_DefaultWeapons[WEAPON_TYPE_MELEE]
+	local primary = primaries[math.random(1, #primaries)] -- g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] and g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] or g_DefaultWeapons[WEAPON_TYPE_PRIMARY]
+	local secondary = secondaries[math.random(1, #secondaries)] -- g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] and g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] or g_DefaultWeapons[WEAPON_TYPE_SECONDARY]
+	local melee = melees[math.random(1, #melees)] -- g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] and g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] or g_DefaultWeapons[WEAPON_TYPE_MELEE]
 
 	self.Player:Give(primary)
 	self.Player:Give(secondary)

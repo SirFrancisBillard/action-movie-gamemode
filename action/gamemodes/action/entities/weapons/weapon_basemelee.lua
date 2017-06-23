@@ -8,6 +8,7 @@ SWEP.ViewModel = "models/weapons/cstrike/c_knife_t.mdl"
 SWEP.WorldModel = "models/weapons/w_knife_t.mdl"
 SWEP.UseHands = true
 
+SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Automatic = true
 SWEP.Primary.AmmoType = "none"
@@ -97,13 +98,14 @@ end
 function SWEP:Reload() end
 
 function SWEP:CanSecondaryAttack()
-	return self.CanDrop
+	-- temp workaround
+	return self.CanDrop -- and not self:GetClass() == "weapon_fists"
 end
 
 local ThrowSound = Sound("Weapon_Crowbar.Single")
 
 function SWEP:SecondaryAttack()
-	if not self:CanPrimaryAttack() then return end
+	if not self:CanSecondaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
 	self:EmitSound(ThrowSound)
@@ -141,8 +143,16 @@ function SWEP:SecondaryAttack()
 			self.Owner:SetHasMeleeWeapon(false)
 		end
 
-		self.Owner:ConCommand("lastinv")
-		self.Owner:StripWeapon(self.ClassName)
 		self.Owner:Give("weapon_fists")
+		self.Owner:SelectWeapon("weapon_fists")
+		self.Owner:StripWeapon(self.ClassName)
+	end
+end
+
+local EquipSound = Sound("Item.PickupMelee")
+
+if SERVER then
+	function SWEP:Equip(ply)
+		ply:EmitSound(EquipSound)
 	end
 end
