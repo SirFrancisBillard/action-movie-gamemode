@@ -52,10 +52,11 @@ function AddNewWeapon(slot, type, tab, cls)
 	end
 
 	for k, v in pairs(tab) do
-		new[k] = v
+		if new[k] then
+			new[k] = v
+		end
 	end
 
-	new.Primary.ClipSize = -1
 	new.Primary.Ammo = "ammotype_" .. cls
 
 	if not g_DefaultWeapons[type] then
@@ -77,7 +78,7 @@ Wep.Primary.Sound = Sound("Weapon_AK47.Single")
 Wep.Primary.Damage = 120
 Wep.Primary.Delay = 0.1
 Wep.Primary.Recoil = 1
-Wep.Primary.Cone = 0.02
+Wep.Primary.Cone = 0.03
 Wep.Primary.NumShots = 1
 AddNewWeapon(WEAPON_SLOT_PRIMARY, WEAPON_TYPE_GUN, Wep, "weapon_ak47")
 
@@ -119,15 +120,15 @@ Wep = {Primary = {}}
 Wep.PrintName = "Pistol"
 Wep.HoldType = "pistol"
 Wep.ViewModel = Model("models/weapons/cstrike/c_pist_usp.mdl")
-Wep.WorldModel = Model("models/weapons/w_pist_usp_silencer.mdl")
+Wep.WorldModel = Model("models/weapons/w_pist_usp.mdl")
 Wep.Slot = 1
 Wep.Primary.DefaultClip = 13
 Wep.Primary.Automatic = true
-Wep.Primary.Sound = Sound("Weapon_USP.SilencedShot")
+Wep.Primary.Sound = Sound("Weapon_USP.Single")
 Wep.Primary.Damage = 60
 Wep.Primary.Delay = 0.3
 Wep.Primary.Recoil = 1
-Wep.Primary.Cone = 0.01
+Wep.Primary.Cone = 0.05
 Wep.Primary.NumShots = 1
 AddNewWeapon(WEAPON_SLOT_SECONDARY, WEAPON_TYPE_GUN, Wep, "weapon_pistol")
 

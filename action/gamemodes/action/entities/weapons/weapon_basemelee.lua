@@ -146,11 +146,3 @@ function SWEP:SecondaryAttack()
 		self.Owner:Give("weapon_fists")
 	end
 end
-
-local EquipSound = Sound("Item.PickupMelee")
-
-if SERVER then
-	function SWEP:Equip(ply)
-		ply:EmitSound(EquipSound)
-	end
-end

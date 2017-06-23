@@ -3,7 +3,7 @@ local function GetGender(ply)
 	return ply.model_table and ply.model_table.gender or GENDER_MALE
 end
 
-hook.Add("EntityTakeDamage", "Action.HurtSounds", function(ply, dmg)
+hook.Add("EntityTakeDamage", "Arena.HurtSounds", function(ply, dmg)
 	-- hurt sounds
 	ply.hurtsound_cooldown = ply.hurtsound_cooldown or 0
 	if IsValid(ply) and ply:IsPlayer() and ply.hurtsound_cooldown < CurTime() then

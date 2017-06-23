@@ -1,4 +1,3 @@
-do return end
 
 hook.Add("KeyPress", "Arena.DropWeapon", function(ply, key)
 	if key == IN_ZOOM then
