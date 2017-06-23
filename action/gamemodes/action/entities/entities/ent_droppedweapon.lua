@@ -24,19 +24,28 @@ if SERVER then
 
 	function ENT:PhysicsCollide(data, phys)
 		if data.Speed > 50 then
+			self.HitGround = true
 			self:EmitSound(Sound("HEGrenade.Bounce"))
 		end
 	end
 
 	function ENT:StartTouch(ent)
-		print("Thrown gun velocity: " .. self:GetVelocity())
+		-- print("Thrown gun velocity: " .. tostring(self:GetVelocity())
+		print("Thrown gun velocity length: " .. self:GetVelocity():Length())
 		if IsValid(ent) and (ent:IsPlayer() or ent:IsNPC()) then
-			if (ent == self.Thrower) and (CurTime() - self.Creation) > 1 then
+			if (CurTime() - self.Creation) > 1 and self:GetVelocity():Length() < 200 then
 				local wep = ent:Give(self.Class)
-				ent:SetAmmo(self.Ammo, wep.Primary.Ammo)
+				if g_GunTypeWeapons[self.Class] then
+					ent:SetAmmo(self.Ammo, wep.Primary.Ammo)
+				end
 				self:Remove()
-			else
-
+			elseif self:GetVelocity():Length() > 200 and not self.HitGround then
+				local dmg = DamageInfo()
+				dmg:SetDamageType(DMG_CLUB)
+				dmg:SetDamage(self:GetVelocity():Length() / 2)
+				dmg:SetAttacker(self.Thrower)
+				dmg:SetInflictor(self)
+				ent:TakeDamageInfo(dmg)
 			end
 		end
 	end

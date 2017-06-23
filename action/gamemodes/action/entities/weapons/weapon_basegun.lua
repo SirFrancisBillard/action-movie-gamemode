@@ -1,9 +1,6 @@
 AddCSLuaFile()
 
 SWEP.PrintName = "Base Gun"
-SWEP.Instructions = [[
-<color=green>[PRIMARY FIRE]</color> Fire a bullet.
-Weapon description.]]
 
 SWEP.ViewModel = "models/weapons/c_357.mdl"
 SWEP.WorldModel = "models/weapons/w_357.mdl"
@@ -29,7 +26,7 @@ SWEP.Primary.TracerType = "Pistol"
 SWEP.Primary.Distance = 56756
 SWEP.Primary.SoundFadeDistance = 3000
 
-SWEP.CrosshairType = "default"
+SWEP.CrosshairType = "circle"
 SWEP.CrosshairRadius = 4
 SWEP.CrosshairColor = Color(0, 255, 0, 255)
 
@@ -60,15 +57,6 @@ SWEP.HoldType = "pistol"
 SWEP.CSMuzzleFlashes = true
 SWEP.CSMuzzleX = true
 
-SWEP.ViewModelPos = Vector(0, 0, 0)
-SWEP.ViewModelAng = Vector(0, 0, 0)
-
-SWEP.IronSightsPos = Vector(0, 0, 0)
-SWEP.IronSightsAng = Vector(0, 0, 0)
-
-SWEP.SprintPos = Vector(0, 0, 0)
-SWEP.SprintAng = Vector(-10, 25, 0)
-
 SWEP.CanDrop = true
 SWEP.ReloadRate = 1
 
@@ -78,7 +66,7 @@ SWEP.CrosshairFunctions = {
 	end,
 	["default"] = function(size, color)
 		local length = 8
-		local both = size + length
+		local both = size + length + 16
 		local w = ScrW()
 		local h = ScrH()
 		local HalfW = w / 2
@@ -129,7 +117,6 @@ function SWEP:PrimaryAttack()
 	self.Owner:SetLastAttack(CurTime())
 
 	self:ShootEffects()
-
 	self:EmitSound(self.Primary.Sound)
 
 	local bullet = {}
@@ -140,16 +127,16 @@ function SWEP:PrimaryAttack()
 	bullet.Force = self.Primary.Force
 	bullet.Damage = self.Primary.Damage
 	bullet.AmmoType = self.Primary.TracerType
-	bullet.Spread = Vector(cone, cone, 0)
+	bullet.Spread = Vector(self.Primary.Cone, self.Primary.Cone, 0)
 	bullet.Distance = self.Primary.Distance
 	bullet.Callback = self.Primary.Callback
 
 	self.Owner:FireBullets(bullet)
-	self.Owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * recoil, math.Rand(-0.1, 0.1) * recoil, 0))
+	self.Owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * self.Primary.Recoil, math.Rand(-0.1, 0.1) * self.Primary.Recoil, 0))
 
 	if SERVER then
 		local eyeang = self.Owner:EyeAngles()
-		eyeang.pitch = eyeang.pitch - recoil
+		eyeang.pitch = eyeang.pitch - self.Primary.Recoil
 		self.Owner:SetEyeAngles(eyeang)
 	end
 
@@ -168,11 +155,14 @@ function SWEP:CanSecondaryAttack()
 	return self.CanDrop
 end
 
+local ThrowSound = Sound("Weapon_Crowbar.Single")
+
 function SWEP:SecondaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
 	self:EmitSound(ThrowSound)
+	self.Owner:ViewPunch(Angle(10, 0, 0))
 
 	if SERVER then
 		local gun = ents.Create("ent_droppedweapon")
@@ -191,23 +181,33 @@ function SWEP:SecondaryAttack()
 		velocity = velocity * 1200
 		phys:ApplyForceCenter(velocity)
 
-		gun.Ammo = self.Owner:GetAmmoCount(self.Primary.Ammo)
-		gun.Class = self.Class
-		gun.Thrower = self.Owner
-	end
+		gun:SetModel(self.WorldModel)
 
-	self.Owner:ConCommand("lastinv")
-	self.Owner:StripWeapon(self.ClassName)
+		gun.Ammo = self.Owner:GetAmmoCount(self.Primary.Ammo)
+		gun.Class = self.ClassName
+		gun.Thrower = self.Owner
+
+		-- cleanup
+		if g_PrimarySlotWeapons[self.ClassName] then
+			self.Owner:SetHasPrimaryWeapon(false)
+		elseif g_SecondarySlotWeapons[self.ClassName] then
+			self.Owner:SetHasSecondaryWeapon(false)
+		elseif g_MeleeSlotWeapons[self.ClassName] then
+			self.Owner:SetHasMeleeWeapon(false)
+		end
+
+		self.Owner:ConCommand("lastinv")
+		self.Owner:StripWeapon(self.ClassName)
+	end
 end
 
 function SWEP:Reload()
 	if not IsFirstTimePredicted() or self.Owner:GetAmmoCount(self.Primary.Ammo) >= self.Primary.DefaultClip or self:GetReloading() then return false end
 
 	self:SendWeaponAnim(ACT_VM_RELOAD)
-	self.Owner:GetViewModel():SetPlaybackRate(self.ReloadRate)
 	self.Owner:SetAnimation(PLAYER_RELOAD)
 
-	self:SetReloadTimer(CurTime() + self:SequenceDuration() * (1 / self.ReloadRate))
+	self:SetReloadTimer(CurTime() + 2)
 	self:SetReloading(true)
 
 	return true

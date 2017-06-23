@@ -10,24 +10,36 @@ function PLAYER:Loadout()
 	self.Player:StripWeapons()
 	self.Player:RemoveAllAmmo()
 
-	local primary = g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] or g_DefaultWeapons[WEAPON_TYPE_PRIMARY]
-	local secondary = g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] or g_DefaultWeapons[WEAPON_TYPE_SECONDARY]
-	local melee = g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] or g_DefaultWeapons[WEAPON_TYPE_MELEE]
+	local primary = "weapon_ak47" -- g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] and g_PrimarySlotWeapons[tostring(self.Player:GetInfo("loadout_primary"))] or g_DefaultWeapons[WEAPON_TYPE_PRIMARY]
+	local secondary = "weapon_pistol" -- g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] and g_SecondarySlotWeapons[tostring(self.Player:GetInfo("loadout_secondary"))] or g_DefaultWeapons[WEAPON_TYPE_SECONDARY]
+	local melee = "weapon_crowbar" -- g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] and g_MeleeSlotWeapons[tostring(self.Player:GetInfo("loadout_melee"))] or g_DefaultWeapons[WEAPON_TYPE_MELEE]
 
 	self.Player:Give(primary)
 	self.Player:Give(secondary)
 	self.Player:Give(melee)
 
 	self.Player:SelectWeapon(primary)
+
+	self.Player:SetHasPrimaryWeapon(true)
+	self.Player:SetHasSecondaryWeapon(true)
+	self.Player:SetHasMeleeWeapon(true)
 end
 
 function PLAYER:SetupDataTables()
+	self.Player:NetworkVar("Bool", 0, "HasPrimaryWeapon")
+	self.Player:NetworkVar("Bool", 1, "HasSecondaryWeapon")
+	self.Player:NetworkVar("Bool", 2, "HasMeleeWeapon")
+
 	self.Player:NetworkVar("Int", 0, "LastAttack")
 	self.Player:NetworkVar("Int", 1, "Kevlar")
 	self.Player:NetworkVar("Int", 2, "Killstreak")
 end
 
 function PLAYER:Spawn()
+	self.Player:SetHasPrimaryWeapon(false)
+	self.Player:SetHasSecondaryWeapon(false)
+	self.Player:SetHasMeleeWeapon(false)
+
 	self.Player:SetLastAttack(0)
 	self.Player:SetKevlar(0)
 	self.Player:SetKillstreak(0)

@@ -15,7 +15,7 @@ function GM:CalcMainActivity( ply, velocity )
 
 	else
 		local len2d = velocity:Length2D()
-		if ( len2d > 150 ) and (CurTime() - ply:GetLastAttack()) > 1 then
+		if ( len2d > 150 ) and ((not isfunction(ply.GetLastAttack) or (CurTime() - ply:GetLastAttack()) > 1)) then
 			ply.CalcIdeal = ACT_HL2MP_RUN_FAST
 		elseif ( len2d > 0.5 ) then
 			ply.CalcIdeal = ACT_MP_WALK

@@ -60,11 +60,10 @@ end
 local minvec = Vector(-6, -6, -6)
 local maxvec = Vector(6, 6, 6)
 local crouchfac = 0
-local rightconvar = CreateClientConVar("thirdperson_ots_right", 20, true, false)
-local upconvar = CreateClientConVar("thirdperson_ots_up", 0, true, false)
-local upcrouchedconvar = CreateClientConVar("thirdperson_ots_crouched_up", 15, true, false)
+local rightconvar = CreateClientConVar("thirdperson_ots_right", 0, true, false)
+local upconvar = CreateClientConVar("thirdperson_ots_up", 20, true, false)
+local upcrouchedconvar = CreateClientConVar("thirdperson_ots_crouched_up", 30, true, false)
 local forwardconvar = CreateClientConVar("thirdperson_ots_forward", -35, true, false)
-local crosscv = CreateClientConVar("thirdperson_ots_crosshair", 1, true, false)
 local fovcv = CreateClientConVar("thirdperson_ots_fov", 100, true, false)
 local lply
 
