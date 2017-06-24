@@ -1,6 +1,6 @@
 
 function GM:KeyRelease(ply, key)
-	if key == IN_ZOOM and ply:GetGrenades() > 0 and (CurTime() - ply:GetLastGrenade()) > 1 then
+	if key == IN_ZOOM and ply:Alive() and ply:GetGrenades() > 0 and (CurTime() - ply:GetLastGrenade()) > 1 then
 		ply:SetLastGrenade(CurTime())
 		ply:SetGrenades(ply:GetGrenades() - 1)
 		ply:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_HL2MP_GESTURE_RANGE_ATTACK_FIST, true)

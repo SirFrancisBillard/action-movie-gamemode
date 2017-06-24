@@ -111,8 +111,6 @@ function SWEP:SecondaryAttack()
 	self:EmitSound(ThrowSound)
 	self.Owner:ViewPunch(Angle(10, 0, 0))
 
-	ply:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_GMOD_GESTURE_ITEM_THROW, true)
-
 	if SERVER then
 		local gun = ents.Create("ent_droppedweapon")
 
