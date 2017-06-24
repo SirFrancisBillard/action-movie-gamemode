@@ -3,7 +3,7 @@ DEFINE_BASECLASS("player_default")
 local PLAYER = {}
 
 PLAYER.DisplayName = "Player"
-PLAYER.WalkSpeed = 125
+PLAYER.WalkSpeed = 300
 PLAYER.RunSpeed = 300
 
 local primaries = {"weapon_ak47", "weapon_shotgun", "weapon_uzi"}
@@ -33,19 +33,27 @@ function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "HasPrimaryWeapon")
 	self.Player:NetworkVar("Bool", 1, "HasSecondaryWeapon")
 	self.Player:NetworkVar("Bool", 2, "HasMeleeWeapon")
+	self.Player:NetworkVar("Bool", 3, "HasEquipmentItem")
 
 	self.Player:NetworkVar("Int", 0, "LastAttack")
-	self.Player:NetworkVar("Int", 1, "Kevlar")
-	self.Player:NetworkVar("Int", 2, "Killstreak")
+	self.Player:NetworkVar("Int", 1, "LastGrenade")
+	self.Player:NetworkVar("Int", 2, "LastKill")
+	self.Player:NetworkVar("Int", 3, "Grenades")
+	self.Player:NetworkVar("Int", 4, "Killstreak")
 end
+
+local nades = CreateConVar("action_grenade_amount", "2", FCVAR_REPLICATED, "How many grenades are given on spawn.")
 
 function PLAYER:Spawn()
 	self.Player:SetHasPrimaryWeapon(false)
 	self.Player:SetHasSecondaryWeapon(false)
 	self.Player:SetHasMeleeWeapon(false)
+	self.Player:SetHasEquipmentItem(false)
 
 	self.Player:SetLastAttack(0)
-	self.Player:SetKevlar(0)
+	self.Player:SetLastGrenade(0)
+	self.Player:SetLastKill(0)
+	self.Player:SetGrenades(nades:GetInt())
 	self.Player:SetKillstreak(0)
 
 	self.Player:SetCanZoom(false)

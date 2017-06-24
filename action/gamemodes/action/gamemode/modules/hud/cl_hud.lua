@@ -1,7 +1,7 @@
 
 surface.CreateFont("Arena_HUD", {
 	font = "Trebuchet",
-	size = 24,
+	size = ScreenScale(24),
 })
 
 function GM:HUDPaint()
@@ -19,8 +19,6 @@ function GM:HUDPaint()
 
 	-- other guy's hud that i stole
 
-	local ply = LocalPlayer()
-	
 	if not ply:Alive() then
 		return
 	end
@@ -28,10 +26,10 @@ function GM:HUDPaint()
 	local wep = ply:GetActiveWeapon()
 	local health = ply:Health()
 	local armor = ply:Armor()
-	
+
 	-- Health and Armor --
 	draw.RoundedBox(0, 0, ScrH() - 100, 250, 100, Color(30, 30, 30, 230)) -- Draw HUD Health background
-	
+
 	-- Health --
 	draw.SimpleText("Health: " .. health, "DermaDefaultBold", 10, ScrH() - 90, Color(255, 255, 255, 255), 0, 0) -- Text
 	draw.RoundedBox(0, 10, ScrH() - 75, 100 * 2.25, 15, Color(255, 0, 0, 30)) -- Ghost box showing 100%
@@ -59,5 +57,15 @@ function GM:HUDPaint()
 
 	if IsValid(wep) and wep.GetSecondaryAmmoType and (ply:GetAmmoCount(wep:GetSecondaryAmmoType()) > 0) then
 		draw.SimpleText("Secondary: " .. ply:GetAmmoCount(wep:GetSecondaryAmmoType()), "DermaDefaultBold", 260, ScrH() - 25, Color(255, 255, 255, 255), 0, 0)
+	end
+
+	if ply:GetGrenades() > 0 then
+		local nades = ""
+
+		for i = 1, ply:GetGrenades() do
+			nades = nades .. "O"
+		end
+
+		draw.SimpleText(nades, "CSTypeDeath", ScrW() * 0.95, ScrH() * 0.95, color_white, TEXT_ALIGN_RIGHT, TEXT_ALIGN_BOTTOM)
 	end
 end

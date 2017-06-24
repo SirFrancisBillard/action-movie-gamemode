@@ -1,6 +1,12 @@
 
 function GM:PlayerCanPickupWeapon(ply, wep)
-	local cls = wep:GetClass()
+	local cls
+
+	if isstring(wep) then
+		cls = wep
+	else
+		cls = wep:GetClass()
+	end
 
 	-- cleanup
 	if g_PrimarySlotWeapons[cls] and not ply:GetHasPrimaryWeapon() then
@@ -11,5 +17,5 @@ function GM:PlayerCanPickupWeapon(ply, wep)
 		return true
 	end
 
-	return wep:GetClass() == "weapon_fists"
+	return isstring(wep) or (wep:GetClass() == "weapon_fists")
 end
