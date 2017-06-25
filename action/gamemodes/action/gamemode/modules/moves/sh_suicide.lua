@@ -12,10 +12,12 @@ concommand.Add("kms", function(ply, cmd, args)
 			local snd = wep.Primary.Sound or Sound("Weapon_Pistol.Single")
 			ply:SetLuaAnimation("kys_pistol")
 
-			timer.Simple(2, function()
+			timer.Simple(1.5, function()
 				if IsValid(ply) and ply:IsPlayer() then
 					ply:EmitSound(snd)
-					ply:Kill()
+					if SERVER then
+						ply:Kill()
+					end
 				end
 			end)
 		end

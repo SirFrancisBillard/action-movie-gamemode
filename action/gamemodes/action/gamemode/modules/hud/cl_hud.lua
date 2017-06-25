@@ -59,7 +59,7 @@ function GM:HUDPaint()
 		draw.SimpleText("Secondary: " .. ply:GetAmmoCount(wep:GetSecondaryAmmoType()), "DermaDefaultBold", 260, ScrH() - 25, Color(255, 255, 255, 255), 0, 0)
 	end
 
-	if ply:GetGrenades() > 0 then
+	if isfunction(ply.GetGrenades) and ply:GetGrenades() > 0 then
 		local nades = ""
 
 		for i = 1, ply:GetGrenades() do
