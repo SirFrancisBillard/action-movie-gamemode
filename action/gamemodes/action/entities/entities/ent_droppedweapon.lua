@@ -30,7 +30,7 @@ if SERVER then
 
 			self.FirstHit = true
 
-			self:EmitSound(Sound("HEGrenade.Bounce"))
+			-- self:EmitSound(Sound("HEGrenade.Bounce"))
 		end
 	end
 

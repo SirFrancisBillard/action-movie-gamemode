@@ -69,6 +69,13 @@ function AddNewWeapon(slot, typ, tab, cls, icon)
 
 	new.Primary.ClipSize = -1
 	new.Primary.Ammo = "ammotype_" .. cls
+	new.Primary.Automatic = true
+
+	if typ == WEAPON_TYPE_MELEE then
+		new.Primary.DefaultClip = -1
+	end
+
+	new.Secondary.Automatic = true
 
 	if not g_DefaultWeapons[typ] then
 		g_DefaultWeapons[typ] = cls
@@ -88,7 +95,6 @@ Wep.ViewModel = Model("models/weapons/cstrike/c_rif_ak47.mdl")
 Wep.WorldModel = Model("models/weapons/w_rif_ak47.mdl")
 Wep.Slot = 0
 Wep.Primary.DefaultClip = 30
-Wep.Primary.Automatic = true
 Wep.Primary.Sound = Sound("Weapon_AK47.Single")
 Wep.Primary.Damage = 120
 Wep.Primary.Delay = 0.1
@@ -106,7 +112,6 @@ Wep.Slot = 0
 Wep.CrosshairType = "circle"
 Wep.CrosshairRadius = 12
 Wep.Primary.DefaultClip = 6
-Wep.Primary.Automatic = false
 Wep.Primary.Sound = Sound("Weapon_XM1014.Single")
 Wep.Primary.Damage = 60
 Wep.Primary.Delay = 0.6
@@ -124,7 +129,6 @@ Wep.Slot = 0
 Wep.CrosshairType = "circle"
 Wep.CrosshairRadius = 8
 Wep.Primary.DefaultClip = 30
-Wep.Primary.Automatic = true
 Wep.Primary.Sound = Sound("Weapon_MAC10.Single")
 Wep.Primary.Damage = 60
 Wep.Primary.Delay = 0.05
@@ -140,7 +144,6 @@ Wep.ViewModel = Model("models/weapons/cstrike/c_pist_usp.mdl")
 Wep.WorldModel = Model("models/weapons/w_pist_usp_silencer.mdl")
 Wep.Slot = 1
 Wep.Primary.DefaultClip = 13
-Wep.Primary.Automatic = true
 Wep.Primary.Sound = Sound("Weapon_USP.SilencedShot")
 Wep.Primary.Damage = 60
 Wep.Primary.Delay = 0.3
@@ -156,7 +159,6 @@ Wep.ViewModel = Model("models/weapons/c_357.mdl")
 Wep.WorldModel = Model("models/weapons/w_357.mdl")
 Wep.Slot = 1
 Wep.Primary.DefaultClip = 6
-Wep.Primary.Automatic = true
 Wep.Primary.Sound = Sound("Weapon_357.Single")
 Wep.Primary.Damage = 120
 Wep.Primary.Delay = 0.5
@@ -176,7 +178,72 @@ Wep.Primary.Sound = Sound("Weapon_Knife.Slash")
 Wep.Primary.SoundMiss = Sound("Weapon_Crowbar.Single")
 Wep.Primary.Range = 64
 Wep.Primary.Damage = 40
-Wep.Primary.Delay = 0.2
+Wep.Primary.Delay = 0.4
+function Wep:SecondaryAttack()
+	if not self:CanPrimaryAttack() then return end
+	self:SetNextSecondaryFire(CurTime() + 0.6)
+
+	self.Owner:SetLuaAnimation("kick_right")
+
+	if not IsValid(self.Owner) then return end
+
+	if self.Owner.LagCompensation then -- for some reason not always true
+		self.Owner:LagCompensation(true)
+	end
+
+	local spos = self.Owner:GetShootPos()
+	local sdest = spos + (self.Owner:GetAimVector() * 128)
+
+	local tr_main = util.TraceLine({start = spos, endpos = sdest, filter = self.Owner, mask = MASK_SHOT_HULL})
+	local hitEnt = tr_main.Entity
+
+	if IsValid(hitEnt) or tr_main.HitWorld then
+		self:EmitSound(self.Primary.Sound)
+		self:SendWeaponAnim(ACT_VM_SECONDARYATTACK)
+
+		if not (CLIENT and (not IsFirstTimePredicted())) then
+			local edata = EffectData()
+			edata:SetStart(spos)
+			edata:SetOrigin(tr_main.HitPos)
+			edata:SetNormal(tr_main.Normal)
+			edata:SetSurfaceProp(tr_main.SurfaceProps)
+			edata:SetHitBox(tr_main.HitBox)
+			edata:SetEntity(hitEnt)
+
+			if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
+				util.Effect("BloodImpact", edata)
+				self.Owner:LagCompensation(false)
+				self.Owner:FireBullets({Num = 1, Src = spos, Dir = self.Owner:GetAimVector(), Spread = Vector(0, 0, 0), Tracer = 0, Force = 1, Damage = 0})
+			else
+				util.Effect("Impact", edata)
+			end
+		end
+	else
+		-- miss
+		self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+		self:EmitSound(self.Primary.SoundMiss)
+	end
+
+
+	if SERVER and hitEnt and hitEnt:IsValid() then
+		-- do another trace that sees nodraw stuff like func_button
+		-- local tr_all = util.TraceLine({start = spos, endpos = sdest, filter = self.Owner})
+
+		local dmg = DamageInfo()
+		dmg:SetDamage(80)
+		dmg:SetAttacker(self.Owner)
+		dmg:SetInflictor(self)
+		dmg:SetDamageForce(self.Owner:GetAimVector() * 1500)
+		dmg:SetDamagePosition(self.Owner:GetPos())
+		dmg:SetDamageType(DMG_SLASH)
+
+		hitEnt:DispatchTraceAttack(dmg, spos + (self.Owner:GetAimVector() * 3), sdest)
+	end
+
+	if self.Owner.LagCompensation then
+		self.Owner:LagCompensation(false)
+	end
+end
 AddNewWeapon(WEAPON_SLOT_MELEE, WEAPON_TYPE_MELEE, Wep, "weapon_fists", {font = "CSTypeDeath", letter = "H"})
 
 Wep = {Primary = {}}

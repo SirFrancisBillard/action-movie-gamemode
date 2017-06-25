@@ -29,6 +29,9 @@ function PLAYER:Loadout()
 	self.Player:SetHasMeleeWeapon(true)
 end
 
+-- issue: networked vars are not networked to all clients
+-- this breaks using GetGrenades in cl_drawholstered.lua
+
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "HasPrimaryWeapon")
 	self.Player:NetworkVar("Bool", 1, "HasSecondaryWeapon")
@@ -42,7 +45,7 @@ function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Int", 4, "Killstreak")
 end
 
-local nades = CreateConVar("action_grenade_amount", "2", FCVAR_REPLICATED, "How many grenades are given on spawn.")
+local nades = CreateConVar("action_grenade_amount", "3", FCVAR_REPLICATED, "How many grenades are given on spawn.")
 
 function PLAYER:Spawn()
 	self.Player:SetHasPrimaryWeapon(false)

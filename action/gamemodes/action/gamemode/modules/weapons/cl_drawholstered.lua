@@ -5,13 +5,13 @@ local drawguns = {
 	["weapon_ak47"] = {
 		model = "models/weapons/w_rif_ak47.mdl",
 		bone = "ValveBiped.Bip01_Spine2",
-		pos = Vector(-1.841, 2.062, -7.473),
+		pos = Vector(-1.841, 3.062, -7.473),
 		ang = Angle(-24.001, 4.126, 9.432)
 	},
 	["weapon_uzi"] = {
 		model = "models/weapons/w_smg_mac10.mdl",
 		bone = "ValveBiped.Bip01_Spine2",
-		pos = Vector(-3.369, 3.322, -3.161),
+		pos = Vector(-3.369, 4, -3.161),
 		ang = Angle(-43.687, 0, 0)
 	},
 	["weapon_shotgun"] = {
@@ -35,7 +35,7 @@ local drawguns = {
 	["weapon_crowbar"] = {
 		model = "models/weapons/w_crowbar.mdl",
 		bone = "ValveBiped.Bip01_Spine2",
-		pos = Vector(1.52, 5.071, 0),
+		pos = Vector(-3.52, 4.571, 0),
 		ang = Angle(-159.075, 0.637, 146.455)
 	},
 	["weapon_knife"] = {
@@ -49,12 +49,12 @@ local drawguns = {
 local grenades = {
 	[1] = {
 		bone = "ValveBiped.Bip01_Spine",
-		pos = Vector(-3.379, -7.185, 4.494),
+		pos = Vector(-3.379, -9.185, 4.494),
 		ang = Angle(-86.863, 14.223, 13.911)
 	},
 	[2] = {
 		bone = "ValveBiped.Bip01_Spine",
-		ppos = Vector(-3.379, -7.185, 4.494),
+		pos = Vector(-3.379, -7.185, 4.494),
 		ang = Angle(-86.863, 14.223, 13.911)
 	},
 	[3] = {
@@ -97,7 +97,7 @@ local function DrawWeapons(ply)
 	end
 
 	for i = 1, #grenades do
-		if ply:GetGrenades() >= i then
+		if isfunction(ply.GetGrenades) and ply:GetGrenades() >= i then
 			local bone = ply:LookupBone(grenades[i].bone)
 
 			if not bone then continue end
@@ -109,11 +109,11 @@ local function DrawWeapons(ply)
 				pos, ang = m:GetTranslation(), m:GetAngles()
 			end
 
-			pos = pos + ang:Forward() * v.pos.x + ang:Right() * v.pos.y + ang:Up() * v.pos.z
+			pos = pos + ang:Forward() * grenades[i].pos.x + ang:Right() * grenades[i].pos.y + ang:Up() * grenades[i].pos.z
 
-			ang:RotateAroundAxis(ang:Up(), v.ang.y)
-			ang:RotateAroundAxis(ang:Right(), v.ang.p)
-			ang:RotateAroundAxis(ang:Forward(), v.ang.r)
+			ang:RotateAroundAxis(ang:Up(), grenades[i].ang.y)
+			ang:RotateAroundAxis(ang:Right(), grenades[i].ang.p)
+			ang:RotateAroundAxis(ang:Forward(), grenades[i].ang.r)
 
 			render.Model({model = "models/weapons/w_eq_fraggrenade.mdl", pos = pos, angle = ang})
 		end

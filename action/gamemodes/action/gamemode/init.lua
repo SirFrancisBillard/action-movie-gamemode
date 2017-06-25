@@ -3,6 +3,9 @@ AddCSLuaFile("shared.lua")
 
 include("shared.lua")
 
+include("boneanimlib_v2/sh_boneanimlib.lua")
+include("boneanimlib_v2/boneanimlib.lua")
+
 local function LoadModules()
 	local fol = GM.FolderName .. "/gamemode/modules/"
 	local files, folders = file.Find(fol .. "*", "LUA")

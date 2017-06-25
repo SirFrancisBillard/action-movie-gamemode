@@ -1,5 +1,7 @@
 include("shared.lua")
 
+include("boneanimlib_v2/cl_boneanimlib.lua")
+
 local function LoadModules()
 	local root = GM.FolderName .. "/gamemode/modules/"
 	local _, folders = file.Find(root .. "*", "LUA")

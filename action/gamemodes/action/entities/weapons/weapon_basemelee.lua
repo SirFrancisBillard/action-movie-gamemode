@@ -33,6 +33,10 @@ function SWEP:PrimaryAttack()
 	if not self:CanPrimaryAttack() then return end
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
+	if self.Owner.SetLastAttack then
+		self.Owner:SetLastAttack(CurTime())
+	end
+
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 
 	if not IsValid(self.Owner) then return end

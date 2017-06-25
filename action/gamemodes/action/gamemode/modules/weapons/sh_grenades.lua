@@ -1,5 +1,5 @@
 
-function GM:KeyRelease(ply, key)
+function GM:KeyPress(ply, key)
 	if key == IN_ZOOM and ply:Alive() and ply:GetGrenades() > 0 and (CurTime() - ply:GetLastGrenade()) > 1 then
 		ply:SetLastGrenade(CurTime())
 		ply:SetGrenades(ply:GetGrenades() - 1)

@@ -234,6 +234,10 @@ function SWEP:Deploy()
 
 	self:SetReloading(false)
 	self:SetReloadTimer(0)
+
+	if GetLuaAnimations()["deploy_" .. self.HoldType] then
+		self.Owner:SetLuaAnimation("deploy_" .. self.HoldType)
+	end
 end
 
 local EquipSound = Sound("Item.PickupGun")
