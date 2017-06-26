@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\SnowzGmod\Payday2\Masks\grant_df"
+	"$bumpmap" "models\SnowzGmod\Payday2\Masks\grant_nm"
+	"$halflambert" 1
+	"$nodecal" "1"
+}
