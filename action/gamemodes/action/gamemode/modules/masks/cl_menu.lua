@@ -12,7 +12,7 @@ surface.CreateFont("MaskMenu", {
 function MASKMENU:SendMask(mask)
 	local m = tonumber(mask)
 	if not isnumber(mask) then return end
-	net.Start("ttt_sendperk")
+	net.Start("action_sendmask")
 	net.WriteInt(m)
 	net.SendToServer()
 end
@@ -45,7 +45,7 @@ function MASKMENU:Build()
 		ListImage:SetImage("vgui/masks/" .. v.Image)
 		ListImage.DoClick = function()
 			chat.AddText("Mask has been set. You can change your perk at any time by typing \"action_mask\" in console.")
-			self:SendPerk(v.ID)
+			self:SendMask(k)
 		end
 
 		local ListLabel = vgui.Create("DLabel", ListPanel)
