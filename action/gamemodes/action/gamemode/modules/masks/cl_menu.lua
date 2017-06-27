@@ -44,7 +44,7 @@ function MASKMENU:Build()
 		ListImage:SetSize(250, 250)
 		ListImage:SetImage("vgui/masks/" .. v.Image)
 		ListImage.DoClick = function()
-			chat.AddText("Mask has been set. You can change your perk at any time by typing \"action_mask\" in console.")
+			chat.AddText("Mask has been set. You can change it at any time by typing \"action_mask\" in console.")
 			self:SendMask(k)
 		end
 
