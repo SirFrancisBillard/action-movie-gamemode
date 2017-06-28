@@ -99,7 +99,7 @@ g_MaskData = {
 		Name = "George W. Bush",
 		Desc = [[Oil profits]],
 		Image = "bush.png",
-		Model = "models/snowzgmod/payday2/masks/maskthe43th.mdl",
+		Model = "models/snowzgmod/payday2/masks/maskthe43rd.mdl",
 		Init = function()
 			hook.Add("DoPlayerDeath", "Action.Masks.Bush", function(ply)
 				if IsValid(ply) and ply:IsPlayer() and ply:GetMask() == MASK_BUSH then
@@ -122,7 +122,7 @@ g_MaskData = {
 		Name = "Bill Clinton",
 		Desc = [[Sexual relations]],
 		Image = "clinton.png",
-		Model = "models/snowzgmod/payday2/masks/maskthe42th.mdl",
+		Model = "models/snowzgmod/payday2/masks/maskthe42nd.mdl",
 		Init = function() end,
 		OnEquip = function(ply) end,
 		OnHolster = function(ply) end
@@ -145,7 +145,7 @@ g_MaskData = {
 			timer.Create("Action.Masks.Obama", 2, 0, function()
 				for k, v in pairs(player.GetAll()) do
 					if IsValid(v) and v:IsPlayer() and v:GetMask() == MASK_OBAMA and v:Health() < v:GetMaxHealth() then
-						v:SetHealth(math.min(v:Health() + 5, v:GetMaxHealth() / 4))
+						v:SetHealth(math.min(v:Health() + 5, v:GetMaxHealth()))
 					end
 				end
 			end)
@@ -159,4 +159,10 @@ local PLAYER = FindMetaTable("Player")
 
 function PLAYER:GetMask()
 	return self:GetNWInt("action_mask", math.random(1, #g_MaskData))
+end
+
+for k, v in pairs(g_MaskData) do
+	if isfunction(v.Init) then
+		v.Init()
+	end
 end

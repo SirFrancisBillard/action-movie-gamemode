@@ -11,9 +11,9 @@ surface.CreateFont("MaskMenu", {
 
 function MASKMENU:SendMask(mask)
 	local m = tonumber(mask)
-	if not isnumber(mask) then return end
+	if not isnumber(m) then return end
 	net.Start("action_sendmask")
-	net.WriteInt(m)
+	net.WriteInt(m, 5)
 	net.SendToServer()
 end
 
@@ -36,13 +36,13 @@ function MASKMENU:Build()
 	List:SetSpaceY(5)
 	List:SetSpaceX(5)
 
-	for k, v in pairs(gPerks) do
+	for k, v in pairs(g_MaskData) do
 		local ListPanel = List:Add("DPanel")
 		ListPanel:SetSize(250, 350)
 
 		local ListImage = vgui.Create("DModelPanel", ListPanel)
 		ListImage:SetSize(250, 250)
-		ListImage:SetImage("vgui/masks/" .. v.Image)
+		ListImage:SetModel(v.Model)
 		ListImage.DoClick = function()
 			chat.AddText("Mask has been set. You can change it at any time by typing \"action_mask\" in console.")
 			self:SendMask(k)
